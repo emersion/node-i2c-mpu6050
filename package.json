@@ -1,0 +1,25 @@
+{
+  "name": "i2c-mpu6050",
+  "version": "1.0.0",
+  "description": "Read data from MPU6050 with i2c",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/emersion/node-i2c-mpu6050.git"
+  },
+  "keywords": [
+    "mpu6050",
+    "raspberry",
+    "pi",
+    "i2c"
+  ],
+  "author": "emersion",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/emersion/node-i2c-mpu6050/issues"
+  },
+  "homepage": "https://github.com/emersion/node-i2c-mpu6050"
+}
