@@ -14,3 +14,5 @@ var sensor = new MPU6050(i2c1, address);
 var data = sensor.read();
 console.log(data);
 ```
+
+Datasheet: http://www.invensense.com/mems/gyro/documents/RM-MPU-6000A-00v4.2.pdf
