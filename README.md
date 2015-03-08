@@ -11,7 +11,7 @@ var i2c1 = i2c.openSync(1);
 
 var sensor = new MPU6050(i2c1, address);
 
-var data = sensor.read();
+var data = sensor.readSync();
 console.log(data);
 ```
 
