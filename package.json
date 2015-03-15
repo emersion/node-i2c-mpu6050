@@ -21,5 +21,8 @@
   "bugs": {
     "url": "https://github.com/emersion/node-i2c-mpu6050/issues"
   },
-  "homepage": "https://github.com/emersion/node-i2c-mpu6050"
+  "homepage": "https://github.com/emersion/node-i2c-mpu6050",
+  "dependencies": {
+    "async": "^0.9.0"
+  }
 }
