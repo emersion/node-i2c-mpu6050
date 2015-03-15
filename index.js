@@ -181,6 +181,17 @@ Sensor.prototype.readTempSync = function () {
 	return this.readWord2cSync(0x41) / 340 + 36.53;
 };
 
+Sensor.prototype.readRotation = function (done) {
+	this.readAccel(function (err, accel) {
+		if (err) return done(err);
+
+		done(null, {
+			x: getXRotation(accel.x, accel.y, accel.z),
+			y: getYRotation(accel.x, accel.y, accel.z)
+		});
+	});
+};
+
 Sensor.prototype.readRotationSync = function (accel) {
 	if (!accel) {
 		accel = this.readAccelSync();
