@@ -1,8 +1,18 @@
 var async = require('async');
 
-// Power management registers
+// Registers
 var POWER_MGMT_1 = 0x6b,
 	POWER_MGMT_2 = 0x6c;
+var ACCEL_XOUT = 0x3b,
+	ACCEL_YOUT = 0x3d,
+	ACCEL_ZOUT = 0x3f;
+var TEMP_OUT = 0x41;
+var GYRO_XOUT = 0x43,
+	GYRO_YOUT = 0x45,
+	GYRO_ZOUT = 0x47;
+
+var ACCEL_LSB_SENSITIVITY = 16384,
+	GYRO_LSB_SENSITIVITY = 131;
 
 function toDegrees(angle) {
   return angle * (180 / Math.PI);
@@ -101,35 +111,35 @@ Sensor.prototype.readGyro = function (done) {
 	var that = this;
 	async.series([
 		function (cb) {
-			that.readWord2c(0x43, function (err, value) {
+			that.readWord2c(GYRO_XOUT, function (err, value) {
 				data.x = value;
 				cb(err);
 			});
 		},
 		function (cb) {
-			that.readWord2c(0x45, function (err, value) {
+			that.readWord2c(GYRO_YOUT, function (err, value) {
 				data.y = value;
 				cb(err);
 			});
 		},
 		function (cb) {
-			that.readWord2c(0x47, function (err, value) {
+			that.readWord2c(GYRO_ZOUT, function (err, value) {
 				data.z = value;
 				cb(err);
 			});
 		}
 	], function (err) {
 		if (err) return done(err);
-		done(null, scaleData(data, 131));
+		done(null, scaleData(data, GYRO_LSB_SENSITIVITY));
 	});
 };
 
 Sensor.prototype.readGyroSync = function () {
 	return scaleData({
-		x: this.readWord2cSync(0x43),
-		y: this.readWord2cSync(0x45),
-		z: this.readWord2cSync(0x47)
-	}, 131);
+		x: this.readWord2cSync(GYRO_XOUT),
+		y: this.readWord2cSync(GYRO_YOUT),
+		z: this.readWord2cSync(GYRO_ZOUT)
+	}, GYRO_LSB_SENSITIVITY);
 };
 
 Sensor.prototype.readAccel = function (done) {
@@ -138,39 +148,39 @@ Sensor.prototype.readAccel = function (done) {
 	var that = this;
 	async.series([
 		function (cb) {
-			that.readWord2c(0x3b, function (err, value) {
+			that.readWord2c(ACCEL_XOUT, function (err, value) {
 				data.x = value;
 				cb(err);
 			});
 		},
 		function (cb) {
-			that.readWord2c(0x3d, function (err, value) {
+			that.readWord2c(ACCEL_YOUT, function (err, value) {
 				data.y = value;
 				cb(err);
 			});
 		},
 		function (cb) {
-			that.readWord2c(0x3f, function (err, value) {
+			that.readWord2c(ACCEL_ZOUT, function (err, value) {
 				data.z = value;
 				cb(err);
 			});
 		}
 	], function (err) {
 		if (err) return done(err);
-		done(null, scaleData(data, 16384));
+		done(null, scaleData(data, ACCEL_LSB_SENSITIVITY));
 	});
 };
 
 Sensor.prototype.readAccelSync = function () {
 	return scaleData({
-		x: this.readWord2cSync(0x3b),
-		y: this.readWord2cSync(0x3d),
-		z: this.readWord2cSync(0x3f)
-	}, 16384);
+		x: this.readWord2cSync(ACCEL_XOUT),
+		y: this.readWord2cSync(ACCEL_YOUT),
+		z: this.readWord2cSync(ACCEL_ZOUT)
+	}, ACCEL_LSB_SENSITIVITY);
 };
 
 Sensor.prototype.readTemp = function (done) {
-	this.readWord2c(0x41, function (err, value) {
+	this.readWord2c(TEMP_OUT, function (err, value) {
 		if (err) return done(err);
 		var temp = value / 340 + 36.53; // In degrees Celcius
 		done(null, temp);
@@ -178,7 +188,7 @@ Sensor.prototype.readTemp = function (done) {
 };
 
 Sensor.prototype.readTempSync = function () {
-	return this.readWord2cSync(0x41) / 340 + 36.53;
+	return this.readWord2cSync(TEMP_OUT) / 340 + 36.53;
 };
 
 Sensor.prototype.readRotation = function (done) {
