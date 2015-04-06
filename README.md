@@ -15,4 +15,8 @@ var data = sensor.readSync();
 console.log(data);
 ```
 
-Datasheet: http://www.invensense.com/mems/gyro/documents/RM-MPU-6000A-00v4.2.pdf
+## Docs
+
+* MPU6050 datasheet: http://www.invensense.com/mems/gyro/documents/RM-MPU-6000A-00v4.2.pdf
+* How to set up i2c:https://learn.adafruit.com/adafruits-raspberry-pi-lesson-4-gpio-setup/configuring-i2c
+* Allow i2c to be used without root privileges: `sudo usermod -G i2c pi` then logout and login
