@@ -19,25 +19,40 @@ function toDegrees(angle) {
 }
 
 function dist(a, b) {
-	return Math.sqrt((a*a)+(b*b));
+	return Math.sqrt(a*a + b*b);
 }
 
+function getRotation(a, b, c) {
+	var radians = Math.atan2(a, dist(b, c));
+	return -toDegrees(radians);
+}
 function getXRotation(x, y, z) {
-	var radians = Math.atan2(y, dist(x, z));
-	return -toDegrees(radians);
+	return getRotation(y, x, z);
 }
-
 function getYRotation(x, y, z) {
-	var radians = Math.atan2(x, dist(y, z));
-	return -toDegrees(radians);
+	return getRotation(x, y, z);
+}
+function getZRotation(x, y, z) {
+	return getRotation(y, z, x);
 }
 
 function scaleData(data, factor) {
 	var scaled = {};
-	for (var name in data) {
-		scaled[name] = data[name] / factor;
+	for (var axis in data) {
+		scaled[axis] = data[axis] / factor;
 	}
 	return scaled;
+}
+
+function applyCalibration(data, cal) {
+	if (!cal) return data;
+
+	for (var axis in data) {
+		if (cal[axis] && typeof cal[axis] == 'number') {
+			data[axis] += cal[axis];
+		}
+	}
+	return data;
 }
 
 
@@ -48,10 +63,18 @@ function Sensor(bus, address) {
 
 	this.bus = bus;
 	this.address = address;
+	this.calibration = {};
 
 	// Now wake the MPU6050 up as it starts in sleep mode
 	bus.writeByteSync(address, POWER_MGMT_1, 0);
 }
+
+Sensor.prototype.calibrateGyro = function (cal) {
+	this.calibration.gyro = cal;
+};
+Sensor.prototype.calibrateAccel = function (cal) {
+	this.calibration.accel = cal;
+};
 
 Sensor.prototype.readWord = function (cmd, done) {
 	var high, low;
@@ -130,16 +153,22 @@ Sensor.prototype.readGyro = function (done) {
 		}
 	], function (err) {
 		if (err) return done(err);
-		done(null, scaleData(data, GYRO_LSB_SENSITIVITY));
+
+		data = scaleData(data, GYRO_LSB_SENSITIVITY);
+		data = applyCalibration(data, that.calibration.gyro);
+		done(null, data);
 	});
 };
 
 Sensor.prototype.readGyroSync = function () {
-	return scaleData({
+	var data = {
 		x: this.readWord2cSync(GYRO_XOUT),
 		y: this.readWord2cSync(GYRO_YOUT),
 		z: this.readWord2cSync(GYRO_ZOUT)
-	}, GYRO_LSB_SENSITIVITY);
+	};
+	data = scaleData(data, GYRO_LSB_SENSITIVITY);
+	data = applyCalibration(data, that.calibration.gyro);
+	return data;
 };
 
 Sensor.prototype.readAccel = function (done) {
@@ -167,16 +196,22 @@ Sensor.prototype.readAccel = function (done) {
 		}
 	], function (err) {
 		if (err) return done(err);
-		done(null, scaleData(data, ACCEL_LSB_SENSITIVITY));
+
+		data = scaleData(data, ACCEL_LSB_SENSITIVITY);
+		data = applyCalibration(data, that.calibration.accel);
+		done(null, data);
 	});
 };
 
 Sensor.prototype.readAccelSync = function () {
-	return scaleData({
+	var data = {
 		x: this.readWord2cSync(ACCEL_XOUT),
 		y: this.readWord2cSync(ACCEL_YOUT),
 		z: this.readWord2cSync(ACCEL_ZOUT)
-	}, ACCEL_LSB_SENSITIVITY);
+	};
+	data = scaleData(data, ACCEL_LSB_SENSITIVITY);
+	data = applyCalibration(data, that.calibration.accel);
+	return data;
 };
 
 Sensor.prototype.readTemp = function (done) {
@@ -197,7 +232,8 @@ Sensor.prototype.readRotation = function (done) {
 
 		done(null, {
 			x: getXRotation(accel.x, accel.y, accel.z),
-			y: getYRotation(accel.x, accel.y, accel.z)
+			y: getYRotation(accel.x, accel.y, accel.z),
+			z: getZRotation(accel.x, accel.y, accel.z)
 		});
 	});
 };
@@ -209,7 +245,8 @@ Sensor.prototype.readRotationSync = function (accel) {
 
 	return {
 		x: getXRotation(accel.x, accel.y, accel.z),
-		y: getYRotation(accel.x, accel.y, accel.z)
+		y: getYRotation(accel.x, accel.y, accel.z),
+		z: getZRotation(accel.x, accel.y, accel.z)
 	};
 };
 
