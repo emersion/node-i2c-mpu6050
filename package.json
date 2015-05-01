@@ -1,6 +1,6 @@
 {
   "name": "i2c-mpu6050",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "Read data from MPU6050 with i2c",
   "main": "index.js",
   "scripts": {
