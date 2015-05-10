@@ -167,7 +167,7 @@ Sensor.prototype.readGyroSync = function () {
 		z: this.readWord2cSync(GYRO_ZOUT)
 	};
 	data = scaleData(data, GYRO_LSB_SENSITIVITY);
-	data = applyCalibration(data, that.calibration.gyro);
+	data = applyCalibration(data, this.calibration.gyro);
 	return data;
 };
 
@@ -210,7 +210,7 @@ Sensor.prototype.readAccelSync = function () {
 		z: this.readWord2cSync(ACCEL_ZOUT)
 	};
 	data = scaleData(data, ACCEL_LSB_SENSITIVITY);
-	data = applyCalibration(data, that.calibration.accel);
+	data = applyCalibration(data, this.calibration.accel);
 	return data;
 };
 
