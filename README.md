@@ -15,6 +15,8 @@ var data = sensor.readSync();
 console.log(data);
 ```
 
+Values are in degrees.
+
 ## Docs
 
 * MPU6050 datasheet: http://www.invensense.com/mems/gyro/documents/RM-MPU-6000A-00v4.2.pdf
