@@ -32,9 +32,6 @@ function getXRotation(x, y, z) {
 function getYRotation(x, y, z) {
 	return getRotation(x, y, z);
 }
-function getZRotation(x, y, z) {
-	return getRotation(y, z, x);
-}
 
 function scaleData(data, factor) {
 	var scaled = {};
@@ -232,8 +229,7 @@ Sensor.prototype.readRotation = function (done) {
 
 		done(null, {
 			x: getXRotation(accel.x, accel.y, accel.z),
-			y: getYRotation(accel.x, accel.y, accel.z),
-			z: getZRotation(accel.x, accel.y, accel.z)
+			y: getYRotation(accel.x, accel.y, accel.z)
 		});
 	});
 };
@@ -245,8 +241,7 @@ Sensor.prototype.readRotationSync = function (accel) {
 
 	return {
 		x: getXRotation(accel.x, accel.y, accel.z),
-		y: getYRotation(accel.x, accel.y, accel.z),
-		z: getZRotation(accel.x, accel.y, accel.z)
+		y: getYRotation(accel.x, accel.y, accel.z)
 	};
 };
 
