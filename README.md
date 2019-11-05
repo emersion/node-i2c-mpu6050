@@ -19,7 +19,7 @@ Values are in degrees.
 
 ## Docs
 
-* MPU6050 datasheet: http://www.invensense.com/mems/gyro/documents/RM-MPU-6000A-00v4.2.pdf
+* MPU6050 datasheet: https://www.invensense.com/wp-content/uploads/2015/02/MPU-6000-Register-Map1.pdf
 * MPU6050 on I2Cdevlib: http://www.i2cdevlib.com/devices/mpu6050#registers
 * How to set up i2c:https://learn.adafruit.com/adafruits-raspberry-pi-lesson-4-gpio-setup/configuring-i2c
 * Allow i2c to be used without root privileges: `sudo usermod -G i2c pi` then logout and login
